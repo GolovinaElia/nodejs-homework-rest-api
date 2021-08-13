@@ -6,7 +6,9 @@ const updateStatusContact = async (req, res, next) => {
   const { body } = req
   const { contactId } = req.params
   try {
+    const userId = req.user.id
     const updatedContact = await ContactsService.updateStatusContact(
+      userId,
       contactId,
       body
     )

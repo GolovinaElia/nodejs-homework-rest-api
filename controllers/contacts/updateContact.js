@@ -6,8 +6,12 @@ const updateContact = async (req, res, next) => {
   const { body } = req
   const { contactId } = req.params
   try {
-    const updatedContact = await ContactsService.updateContact(contactId, body)
-
+    const userId = req.user.id
+    const updatedContact = await ContactsService.updateContact(
+      userId,
+      contactId,
+      body
+    )
     res.status(HttpCode.OK).json({
       status: "success",
       code: HttpCode.OK,

@@ -5,7 +5,8 @@ const { ErrorHandler } = require("../../src/helpers/ErrorHandler")
 const getContactById = async (req, res, next) => {
   const { contactId } = req.params
   try {
-    const contact = await ContactsService.getContactById(contactId)
+    const userId = req.user.id
+    const contact = await ContactsService.getContactById(userId, contactId)
     if (!contact) throw new ErrorHandler(HttpCode.NOT_FOUND, "Not found ")
     res.status(HttpCode.OK).json({
       status: "success",

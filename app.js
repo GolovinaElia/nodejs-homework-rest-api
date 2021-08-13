@@ -2,17 +2,38 @@ const express = require("express")
 const logger = require("morgan")
 const cors = require("cors")
 const { HttpCode } = require("./src/helpers/constants")
+const { ErrorHandler } = require("./src/helpers/ErrorHandler")
+const helmet = require("helmet")
+const rateLimit = require("express-rate-limit")
+const { apilimit, jsonlimit } = require("./src/config/rate-limit.json")
 
+const usersRouter = require("./routes/api/users")
 const contactsRouter = require("./routes/api/contacts")
 
 const app = express()
 
 const formatsLogger = app.get("env") === "development" ? "dev" : "short"
 
+app.use(helmet())
 app.use(logger(formatsLogger))
 app.use(cors())
-app.use(express.json())
-
+app.use(express.json({ limit: jsonlimit }))
+app.use(
+  "/api/",
+  rateLimit({
+    windowMs: apilimit.windowMs,
+    max: apilimit.max,
+    handler: (req, res, next) => {
+      next(
+        new ErrorHandler(
+          HttpCode.BAD_REQUEST,
+          "You have reached the number of requests"
+        )
+      )
+    },
+  })
+)
+app.use("/api/users", usersRouter)
 app.use("/api/contacts", contactsRouter)
 
 app.use((_, res) => {

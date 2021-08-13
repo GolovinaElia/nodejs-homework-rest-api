@@ -1,0 +1,11 @@
+{
+  "apilimit": {
+    "windowMs": 90000,
+    "max": 100
+  },
+  "jsonlimit": 10000,
+  "accountlimit": {
+    "windowMs": 3600000,
+    "max": 2
+  }
+}

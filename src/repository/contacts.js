@@ -1,29 +1,44 @@
-const Contact = require("../../model")
+const { Contact } = require("../../model")
 
 class ContactsRepository {
   constructor() {
     this.model = Contact
   }
-  async listContacts() {
-    const result = await this.model.find({})
+  async listContacts(userId, { page = 1, limit = 20 }) {
+    const result = await this.model.paginate(
+      { owner: userId },
+      {
+        page,
+        limit,
+        populate: { path: "owner", select: "email subscription -_id" },
+      }
+    )
     return result
   }
-  async getContactById(id) {
-    const result = await this.model.findOne({ _id: id })
+  async getContactById(userId, id) {
+    const result = await this.model
+      .findOne({ _id: id, owner: userId })
+      .populate({
+        path: "owner",
+        select: "email subscription -_id",
+      })
     return result
   }
-  async create(body) {
-    const result = await this.model.create(body)
+  async create(userId, body) {
+    const result = await this.model.create({ ...body, owner: userId })
     return result
   }
-  async removeContact(id) {
-    const result = await this.model.findByIdAndRemove({ _id: id })
+  async removeContact(userId, id) {
+    const result = await this.model.findByIdAndRemove({
+      _id: id,
+      owner: userId,
+    })
     return result
   }
 
-  async updateContact(id, body) {
+  async updateContact(userId, id, body) {
     const result = await this.model.findByIdAndUpdate(
-      { _id: id },
+      { _id: id, owner: userId },
       { ...body },
       { new: true }
     )
@@ -31,9 +46,9 @@ class ContactsRepository {
     return result
   }
 
-  async updateStatusContact(id, body) {
+  async updateStatusContact(userId, id, body) {
     const result = await this.model.findByIdAndUpdate(
-      { _id: id },
+      { _id: id, owner: userId },
       { ...body },
       { new: true }
     )

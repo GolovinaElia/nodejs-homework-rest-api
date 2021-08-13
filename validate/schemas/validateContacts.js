@@ -29,7 +29,7 @@ const updateStatusContactSchema = Joi.object({
   favorite: Joi.boolean().required(),
 })
 
-const addContact = (req, res, next) => {
+const validateAddContact = (req, res, next) => {
   const { error } = contactSchema.validate(req.body)
   if (error) {
     return res.status(HttpCode.BAD_REQUEST).json({
@@ -40,7 +40,7 @@ const addContact = (req, res, next) => {
   }
   next()
 }
-const updateContact = (req, res, next) => {
+const validateUpdateContact = (req, res, next) => {
   const { error } = contactUpdateSchema.validate(req.body)
   if (error) {
     return res.status(HttpCode.BAD_REQUEST).json({
@@ -52,7 +52,7 @@ const updateContact = (req, res, next) => {
   next()
 }
 
-const updateStatusContact = (req, res, next) => {
+const validateUpdateStatusContact = (req, res, next) => {
   const { error } = updateStatusContactSchema.validate(req.body)
   if (error) {
     return res.status(HttpCode.BAD_REQUEST).json({
@@ -64,8 +64,7 @@ const updateStatusContact = (req, res, next) => {
   next()
 }
 module.exports = {
-  contactSchema,
-  addContact,
-  updateContact,
-  updateStatusContact,
+  validateAddContact,
+  validateUpdateContact,
+  validateUpdateStatusContact,
 }
