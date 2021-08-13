@@ -2,23 +2,44 @@ const express = require("express")
 const logger = require("morgan")
 const cors = require("cors")
 const { HttpCode } = require("./src/helpers/constants")
+const { ErrorHandler } = require("./src/helpers/ErrorHandler")
+const helmet = require("helmet")
+const rateLimit = require("express-rate-limit")
+const { apilimit, jsonlimit } = require("./src/config/rate-limit.json")
 
+const usersRouter = require("./routes/api/users")
 const contactsRouter = require("./routes/api/contacts")
 
 const app = express()
 
 const formatsLogger = app.get("env") === "development" ? "dev" : "short"
 
+app.use(helmet())
 app.use(logger(formatsLogger))
 app.use(cors())
-app.use(express.json())
-
+app.use(express.json({ limit: jsonlimit }))
+app.use(
+  "/api/",
+  rateLimit({
+    windowMs: apilimit.windowMs,
+    max: apilimit.max,
+    handler: (req, res, next) => {
+      next(
+        new ErrorHandler(
+          HttpCode.BAD_REQUEST,
+          "You have reached the number of requests"
+        )
+      )
+    },
+  })
+)
+app.use("/api/users", usersRouter)
 app.use("/api/contacts", contactsRouter)
 
 app.use((_, res) => {
-  res.status(404).json({
+  res.status(HttpCode.NOT_FOUND).json({
     status: "error",
-    code: 404,
+    code: HttpCode.NOT_FOUND,
     message: "Not found",
   })
 })
@@ -30,12 +51,6 @@ app.use((error, req, res, next) => {
     message: error.message,
     data: error.status === 500 ? "Internal server error" : error.data,
   })
-  // const { code = 500, message = "Internal server error" } = error
-  // res.status(500).json({
-  //   status: "fail",
-  //   code,
-  //   message,
-  // })
 })
 
 module.exports = app

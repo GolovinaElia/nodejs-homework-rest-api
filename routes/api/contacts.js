@@ -1,27 +1,34 @@
 const express = require("express")
 const router = express.Router()
 const { contacts: ctrl } = require("../../controllers")
-const { validate } = require("../../validate/schemas")
+const {
+  validateAddContact,
+  validateUpdateContact,
+  validateUpdateStatusContact,
+} = require("../../validate/schemas/validateContacts")
+const guard = require("../../src/helpers/guard")
 
-router.get("/", ctrl.listContacts)
+router.get("/", guard, ctrl.listContacts)
 
-router.get("/:contactId", ctrl.getContactById)
+router.get("/:contactId", guard, ctrl.getContactById)
 
-router.post("/", express.json(), validate.addContact, ctrl.addContact)
+router.post("/", express.json(), guard, validateAddContact, ctrl.addContact)
 
-router.delete("/:contactId", ctrl.removeContact)
+router.delete("/:contactId", guard, ctrl.removeContact)
 
 router.put(
   "/:contactId",
+  guard,
   express.json(),
-  validate.updateContact,
+  validateUpdateContact,
   ctrl.updateContact
 )
 
 router.patch(
   "/:contactId/favorite",
+  guard,
   express.json(),
-  validate.updateStatusContact,
+  validateUpdateStatusContact,
   ctrl.updateStatusContact
 )
 
