@@ -25,6 +25,7 @@ const registration = async (req, res, next) => {
         id: newUser.id,
         email: newUser.email,
         subscription: newUser.subscription,
+        avatar: newUser.avatar,
       },
     })
   } catch (error) {

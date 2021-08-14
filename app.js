@@ -6,12 +6,13 @@ const { ErrorHandler } = require("./src/helpers/ErrorHandler")
 const helmet = require("helmet")
 const rateLimit = require("express-rate-limit")
 const { apilimit, jsonlimit } = require("./src/config/rate-limit.json")
+const path = require("path")
 
 const usersRouter = require("./routes/api/users")
 const contactsRouter = require("./routes/api/contacts")
 
 const app = express()
-
+app.use(express.static(path.join(__dirname, "public")))
 const formatsLogger = app.get("env") === "development" ? "dev" : "short"
 
 app.use(helmet())

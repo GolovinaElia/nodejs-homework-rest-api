@@ -1,4 +1,5 @@
 const { UsersRepository } = require("../repository")
+require("dotenv").config()
 
 class UserService {
   constructor() {
@@ -16,6 +17,10 @@ class UserService {
   }
   async findById(id) {
     const data = await this.repositories.users.findById(id)
+    return data
+  }
+  async updateAvatar(id, pathFile) {
+    const data = await this.repositories.users.findById(id, pathFile)
     return data
   }
 }
