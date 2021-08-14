@@ -22,7 +22,10 @@ class AuthService {
     const data = await this.repositories.users.findById(payload.id)
     const userResult = {
       token: data.token,
-      user: { email: data.email, subscription: data.subscription },
+      user: {
+        email: data.email,
+        subscription: data.subscription,
+      },
     }
     return userResult
   }

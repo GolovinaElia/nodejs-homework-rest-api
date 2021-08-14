@@ -18,6 +18,7 @@ const current = async (req, res, next) => {
       data: {
         email: result.email,
         subscription: result.subscription,
+        avatarURL: result.avatarURL,
       },
     })
   } catch (error) {
