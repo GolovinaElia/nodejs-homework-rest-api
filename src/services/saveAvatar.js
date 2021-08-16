@@ -1,5 +1,5 @@
 const jimp = require("jimp")
-const fs = require("fs").promise
+const fs = require("fs/promises")
 const path = require("path")
 require("dotenv").config()
 

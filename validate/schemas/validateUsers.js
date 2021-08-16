@@ -6,10 +6,19 @@ const userSchema = Joi.object({
   email: Joi.string()
     .email({
       minDomainSegments: 2,
-      tlds: { allow: ["com", "net", "uk", "org", "ca"] },
+      tlds: { allow: ["com", "net", "uk", "org", "ca", "ua"] },
     })
     .required(),
-  password: Joi.string().pattern(new RegExp("^[a-zA-Z0-9]{3,30}$")).required(),
+  password: Joi.string().required(),
+})
+
+const verifySchema = Joi.object({
+  email: Joi.string()
+    .email({
+      minDomainSegments: 2,
+      tlds: { allow: ["net"] },
+    })
+    .required(),
 })
 
 const validateReg = (req, res, next) => {
@@ -24,6 +33,19 @@ const validateReg = (req, res, next) => {
   next()
 }
 
+const validateVer = (req, res, next) => {
+  const { error } = verifySchema.validate(req.body)
+  if (error) {
+    return res.status(HttpCode.BAD_REQUEST).json({
+      status: "error",
+      code: HttpCode.BAD_REQUEST,
+      message: error.message,
+    })
+  }
+  next()
+}
+
 module.exports = {
   validateReg,
+  validateVer,
 }
