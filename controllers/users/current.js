@@ -5,8 +5,8 @@ const serviceUsers = new UserService()
 const current = async (req, res, next) => {
   try {
     const userId = req.user.id
-    const result = await serviceUsers.findById(userId)
-    if (!result) {
+    const user = await serviceUsers.getCurrentUser(userId)
+    if (!user) {
       res.status(HttpCode.UNAUTHORIZED).json({
         status: HttpCode.UNAUTHORIZED,
         message: "Not authorized",
@@ -16,9 +16,7 @@ const current = async (req, res, next) => {
       status: "success",
       code: HttpCode.OK,
       data: {
-        email: result.email,
-        subscription: result.subscription,
-        avatarURL: result.avatarURL,
+        user,
       },
     })
   } catch (error) {

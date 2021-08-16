@@ -14,9 +14,10 @@ const login = async (req, res, next) => {
         data: { ...userResult },
       })
     }
-    next({
-      status: HttpCode.UNAUTHORIZED,
-      message: "Email or password is wrong",
+    return res.status(HttpCode.UNAUTHORIZED).json({
+      status: "error",
+      code: HttpCode.UNAUTHORIZED,
+      message: "Invalid credentials",
     })
   } catch (error) {
     next(error)

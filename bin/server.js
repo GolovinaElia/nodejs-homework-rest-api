@@ -1,7 +1,7 @@
 const app = require("../app")
 const db = require("../src/db")
 const path = require("path")
-const fs = require("fs").promises
+const fs = require("fs/promises")
 const createFolderIsNotExist = require("../src/helpers/createFolder")
 require("dotenv").config()
 
